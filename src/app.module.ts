@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import type { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './presentation/auth.module';
-import { UserOrmEntity } from './infrastructure/database/typeorm/user.orm-entity';
 
 @Module({
   imports: [
@@ -12,7 +11,7 @@ import { UserOrmEntity } from './infrastructure/database/typeorm/user.orm-entity
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService): PostgresConnectionOptions => {
+      useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
         const synchronize =
           configService.get<string>('DB_SYNCHRONIZE', 'false') === 'true';
         const sslEnabled =
@@ -21,7 +20,7 @@ import { UserOrmEntity } from './infrastructure/database/typeorm/user.orm-entity
         return {
           type: 'postgres',
           url: configService.get<string>('DATABASE_URL'),
-          entities: [UserOrmEntity],
+          autoLoadEntities: true,
           synchronize,
           ssl: sslEnabled ? { rejectUnauthorized: false } : false,
         };
