@@ -3,8 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './presentation/auth.module';
+import { HealthController } from './presentation/controllers/health.controller';
 
 @Module({
+  controllers: [HealthController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
