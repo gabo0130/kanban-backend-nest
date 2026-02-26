@@ -75,9 +75,22 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "application/use-cases/**/*.ts",
+      "presentation/controllers/**/*.ts",
+      "presentation/guards/**/*.ts",
+      "infrastructure/security/**/*.ts",
+      "shared/exceptions/**/*.ts",
+      "domain/entities/roles-catalog.ts",
+      "!**/*.spec.ts"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    }
   }
 }
