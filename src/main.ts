@@ -6,10 +6,15 @@ import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: corsOrigins,
     credentials: true,
   });
 
@@ -26,4 +31,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 4000);
 }
-bootstrap();
+void bootstrap();
