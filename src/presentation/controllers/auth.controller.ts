@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Req,
   UnauthorizedException,
@@ -20,6 +21,7 @@ export class AuthController {
     private readonly getMeUseCase: GetMeUseCase,
   ) {}
 
+  @HttpCode(200)
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.loginUseCase.execute(loginDto);
@@ -30,7 +32,7 @@ export class AuthController {
   getMe(@Req() request: AuthenticatedRequest) {
     const userId = request.user?.userId;
 
-    if (!userId) {
+    if (userId === undefined) {
       throw new UnauthorizedException({
         message: 'Token no válido o expirado',
       });
