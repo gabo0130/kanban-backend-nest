@@ -1,19 +1,18 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { UserResponseDto } from '../dto/user-response.dto';
 import type { UserRepository } from '../../domain/repositories/user.repository.interface';
 import { USER_REPOSITORY } from '../../shared/interfaces/tokens';
 
 @Injectable()
-export class GetMeUseCase {
+export class GetUserByIdUseCase {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
   ) {}
 
-  async execute(userId: number): Promise<UserResponseDto> {
+  async execute(userId: number) {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {
-      throw new NotFoundException({ message: 'Usuario no encontrado' });
+      throw new NotFoundException({ message: 'Recurso no encontrado' });
     }
 
     return {

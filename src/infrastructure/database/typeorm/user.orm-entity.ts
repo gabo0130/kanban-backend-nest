@@ -22,6 +22,6 @@ export class UserOrmEntity {
   })
   password: string;
 
-  @Column({ type: 'varchar', nullable: false, default: 'user' })
+  @Column({ type: 'varchar', nullable: false, default: 'Member' })
   role: string;
 }
