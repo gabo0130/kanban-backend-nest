@@ -6,7 +6,13 @@ import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
+  const configuredOrigins = process.env.CORS_ORIGIN;
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'https://gestor-kanban.vercel.app',
+  ];
+
+  const corsOrigins = (configuredOrigins || defaultOrigins.join(','))
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
@@ -14,8 +20,21 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: corsOrigins,
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (!origin || corsOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 204,
   });
 
   app.useGlobalPipes(
